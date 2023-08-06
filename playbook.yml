@@ -28,3 +28,55 @@
       pod: "new:tomcat_container"
       ports:
         - "8080:8080"
+
+- hosts: redhat
+  become: yes
+  remote_user: ansible
+
+  tasks:
+
+  - name: Install apache
+    yum:
+      name: httpd
+      state: present
+
+  - name: Create virtualhost configuration directory
+    file:
+      path: /etc/httpd/vhosts.d
+      state: directory
+      owner: root
+
+  - name: Copy virtualhost configuration
+    copy:
+      src: ./archivos/virtualhost.conf
+      dest: /etc/httpd/vhosts.d/ejemplo.conf
+      notify: Restart apache
+
+  - name: Include vhosts directory
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      line: IncludeOptional /etc/httpd/vhosts.d/*.conf
+
+  - name: Open firewall ports
+    firewalld:
+      service: "{{ item }}"
+      state: enabled
+      permament: true
+      immediate: true
+    loop:
+    - http
+    - https
+
+  - name: Start and enable httpd service
+    service:
+      name: httpd
+      enabled: true
+      state: started
+
+
+      handlers:
+
+      - name: Restart apache
+        service:
+          name: httpd
+          state: restarted  
