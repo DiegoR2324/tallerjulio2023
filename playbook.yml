@@ -1,0 +1,30 @@
+---
+- hosts: redhat
+  become: yes
+  remote_user: sysadmin
+
+  tasks:
+
+  - name: Install podman
+    yum:
+      name: podman
+      state: present
+     
+  - name: Start and enable podman service
+    service:
+      name: podman
+      enabled: ture
+      state: started    
+
+  - name: Pull tomcat image
+    containers.podman.podman_image:
+      name: docker.io/library/tomcat
+
+  - name: Run container
+    containers.podman.podman_image:
+      name: tomcatapp
+      image: docker.io/library/tomcat
+      state: started
+      pod: "new:tomcat_container"
+      ports:
+        - "8080:8080"
