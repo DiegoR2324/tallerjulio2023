@@ -1,7 +1,7 @@
 ---
 - hosts: redhat
   become: yes
-  remote_user: sysadmin
+  remote_user: ansible
 
   tasks:
 
@@ -13,7 +13,7 @@
   - name: Start and enable podman service
     service:
       name: podman
-      enabled: ture
+      enabled: true
       state: started    
 
   - name: Pull tomcat image
