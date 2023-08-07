@@ -21,11 +21,12 @@
       name: docker.io/library/tomcat
 
   - name: Run container
-    containers.podman.podman_image:
+    containers.podman.podman_container:
       name: tomcatapp
       image: docker.io/library/tomcat
       state: started
-      pod: "new:tomcat_container"
+      exposed_ports:
+        - 8080      
       ports:
         - "8080:8080"
 
@@ -50,7 +51,7 @@
     copy:
       src: ./archivos/virtualhost.conf
       dest: /etc/httpd/vhosts.d/ejemplo.conf
-      notify: Restart apache
+    notify: Restart apache
 
   - name: Include vhosts directory
     lineinfile:
@@ -61,7 +62,7 @@
     firewalld:
       service: "{{ item }}"
       state: enabled
-      permament: true
+      permanent: true
       immediate: true
     loop:
     - http
@@ -74,7 +75,7 @@
       state: started
 
 
-      handlers:
+  handlers:
 
       - name: Restart apache
         service:
