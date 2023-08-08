@@ -18,12 +18,12 @@
 
   - name: Pull tomcat image
     containers.podman.podman_image:
-      name: docker.io/library/tomcat
+      name: quay.io/diegor2324/obligatorio/tomcat
 
   - name: Run container
     containers.podman.podman_container:
       name: tomcatapp
-      image: docker.io/library/tomcat
+      image: quay.io/diegor2324/obligatorio/tomcat
       state: started
       exposed_ports:
         - 8080      
