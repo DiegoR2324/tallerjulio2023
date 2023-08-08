@@ -6,6 +6,7 @@
     - dbpassword.yml
 
 
+
   tasks:
 
   - name: Mariadb server install
@@ -38,7 +39,7 @@
       line: bind-address = 0.0.0.0
     notify: Restart mariadb server
 
-    name: Open mariadb ports
+  - name: Open mariadb ports
     ufw:
       rule: allow
       port: '3306'
@@ -48,17 +49,16 @@
 
   - name: Update MariaDB root password
     mysql_user:
-      login_unix_socket: /var/run/myqsld/mysqld.sock
       login_user: root
       login_password: "{{ rootpass }}"
-      check_implicit_admin: yes
-      name: root
       host: "{{ item }}"
+      name: root
       password: "{{ rootpass }}"
+      login_unix_socket: /var/run/mysqld/mysqld.sock 
     loop:
-      - 127.0.0.1
-      - localhost
-      - 192.168.56.%
+       - 127.0.0.1
+       - localhost
+       - 192.168.56.%
 
   - name: Delete anonymous user
     mysql_user:
@@ -76,6 +76,21 @@
       login_password: "{{ rootpass }}"
       name: test
       state: absent
+
+#Database
+  - name: Copy database
+    copy:
+      src: ./archivos/todo.sql
+      dest: /tmp
+
+  - name: Import todo database
+    mysql_db:
+      name: todo
+      login_host: localhost
+      login_user: root
+      login_password: "{{ rootpass }}"      
+      state: import
+      target: /tmp/todo.sql
 
   handlers:
 
