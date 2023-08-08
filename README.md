@@ -21,5 +21,32 @@ Funciones:
 - Automatiza instalacion segura de mariadb
 - Crea base de datos
 
+## Instalacion
 
+Instala git usando dnf.
+```bash
+sudo dnf install git
+```
 
+Instala ansible usando dnf.
+```bash
+sudo dnf install ansible
+```
+
+Clona este repositorio utilizando git.
+```bash
+git clone git@github.com:DiegoR2324/tallerjulio2023.git
+```
+
+## Uso
+
+Moverse a directorio tallerjulio2023
+```bash
+cd tallerjulio2023/
+```
+
+Ejecutar playbooks
+```bash
+ansible-playbook playbook.yml --ask-become-pass
+ansible-playbook mariadbserver.yml --ask-become-pass --ask-vault-pass
+```
